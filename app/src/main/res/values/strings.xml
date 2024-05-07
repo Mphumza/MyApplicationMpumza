@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="check_symptoms">check_symptoms</string>
+    <string name="enter_symptoms_here">enter_symptoms</string>
+    <string name="results_will_appear_here">results_will_appear</string>
+    <string name="button">button</string>
+    <string name="welcome_to_symptomchecker">Welcome to SymptomChecker!</string>
+    <string name="type_your_answer_here">Type your answer here</string>
+    <string name="sample_question">Sample Question</string>
+    <string name="submit">Submit</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+</resources>
