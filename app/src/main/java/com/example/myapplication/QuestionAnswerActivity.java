@@ -9,6 +9,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
+import android.os.Handler;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -85,9 +87,15 @@ public class QuestionAnswerActivity extends AppCompatActivity {
 
     private void finishQuestions() {
         if (yesCount >= 7) {
-            showDoctorDialog();
+            // Show a Toast message when the condition is severe
+            Toast.makeText(QuestionAnswerActivity.this, "Based on your responses, it is advisable to see a doctor. Redirecting to appointment booking...", Toast.LENGTH_LONG).show();
+            // Delay the redirection by 3 seconds
+            new Handler().postDelayed(this::showDoctorDialog, 6000); // 6000 milliseconds = 6 seconds
         } else {
-            navigateToSymptomChecker();
+            // Show a Toast message when the condition is not severe
+            Toast.makeText(QuestionAnswerActivity.this, "Your condition may not be severe. Redirecting to symptom checker for possible conditions and remedies...", Toast.LENGTH_LONG).show();
+            // Delay the redirection by 3 seconds
+            new Handler().postDelayed(this::navigateToSymptomChecker, 6000); // 6000 milliseconds = 6 seconds
         }
     }
 
