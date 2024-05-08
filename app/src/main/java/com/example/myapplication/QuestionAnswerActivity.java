@@ -1,64 +1,43 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.SystemClock;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class InterviewActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class QuestionAnswerActivity extends AppCompatActivity {
     private TextView textViewQuestion;
     private RadioGroup radioGroupAnswers;
     private Button buttonConfirm;
-    private Cursor questionsCursor;
-    private databaseHelper dbHelper;
-    private boolean isLastQuestion = false;
-    private long startTime;
+    private final String[] questions = {"having stomach problems?","having constant coughing?","Are you feeling fatigue?","Do you have a fever?", "Do you feel nausea?", "Are you experiencing headaches?","is your Temperature above 30 degrees?","experiencing chest pains?","having a sore throat?","Are your eyes sore/itching?"}; // Add more questions as needed
+    private int currentQuestionIndex = 0;
+    private int yesCount = 0;
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_interview);
+        setContentView(R.layout.activity_question_answer);
 
-        textViewQuestion = new TextView(this);
-        radioGroupAnswers = new RadioGroup(this);
-        buttonConfirm = new Button(this);
-        buttonConfirm.setText("Confirm");
-        buttonConfirm.setVisibility(View.GONE);
-
-        dbHelper = new databaseHelper(this);
-        questionsCursor = dbHelper.getRandomQuestions();
+        textViewQuestion = findViewById(R.id.textViewQuestion);
+        radioGroupAnswers = findViewById(R.id.radioGroupAnswers);
+        buttonConfirm = findViewById(R.id.buttonConfirm);
 
         setupQuestionView();
         displayNextQuestion();
-
-        startTime = SystemClock.elapsedRealtime();
     }
 
     @SuppressLint("SetTextI18n")
     private void setupQuestionView() {
-        LinearLayout layout = findViewById(R.id.layout_questionnaire);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(24, 24, 24, 24);
-
-        textViewQuestion.setLayoutParams(params);
-        textViewQuestion.setTextSize(18);
-        textViewQuestion.setPadding(16, 16, 16, 16);
-
-        radioGroupAnswers.setLayoutParams(params);
-        radioGroupAnswers.setOrientation(RadioGroup.VERTICAL);
+        textViewQuestion.setText(questions[currentQuestionIndex]);
 
         RadioButton radioButtonYes = new RadioButton(this);
         radioButtonYes.setText("Yes");
@@ -67,87 +46,43 @@ public class InterviewActivity extends AppCompatActivity {
         radioGroupAnswers.addView(radioButtonYes);
         radioGroupAnswers.addView(radioButtonNo);
 
-        buttonConfirm.setLayoutParams(params);
-
-        layout.addView(textViewQuestion);
-        layout.addView(radioGroupAnswers);
-        layout.addView(buttonConfirm);
-
-        radioGroupAnswers.setOnCheckedChangeListener((group, checkedId) -> buttonConfirm.setVisibility(View.VISIBLE));
-
         buttonConfirm.setOnClickListener(v -> {
-            if (!isLastQuestion) {
-                if (questionsCursor.moveToNext()) {
-                    updateQuestionView();
-                } else {
-                    isLastQuestion = true;
-                    buttonConfirm.setText("Submit");
-                }
-            } else {
-                finishQuestions();
+            int checkedRadioButtonId = radioGroupAnswers.getCheckedRadioButtonId();
+            if (checkedRadioButtonId == radioButtonYes.getId()) {
+                yesCount++;
             }
+            else(Toast.makeText())
+            displayNextQuestion();
         });
     }
 
-    private void updateQuestionView() {
-        @SuppressLint("Range") String question = questionsCursor.getString(questionsCursor.getColumnIndex("question"));
-        textViewQuestion.setText(question);
-        radioGroupAnswers.clearCheck();
-        buttonConfirm.setVisibility(View.GONE);
-    }
-
-    @SuppressLint("SetTextI18n")
     private void displayNextQuestion() {
-        if (questionsCursor.moveToNext()) {
-            updateQuestionView();
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            textViewQuestion.setText(questions[currentQuestionIndex]);
+            radioGroupAnswers.clearCheck();
         } else {
-            isLastQuestion = true;
-            buttonConfirm.setText("Submit");
+            finishQuestions();
         }
     }
 
     private void finishQuestions() {
-        long endTime = SystemClock.elapsedRealtime();
-        long duration = (endTime - startTime) / 1000;
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Time Taken");
-        builder.setMessage("You completed the interview in " + duration + " seconds.");
-        builder.setPositiveButton("OK", (dialog, which) -> askToReviewAnswers());
-        builder.show();
+        if (yesCount >= 7) {
+            showDoctorDialog();
+        } else {
+            navigateToSymptomChecker();
+        }
     }
 
-    private void askToReviewAnswers() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Review Answers");
-        builder.setMessage("Do you want to review your answers?");
-        builder.setPositiveButton("Yes", (dialog, which) -> showAnswers());
-        builder.setNegativeButton("No", (dialog, which) -> navigateToNextPage());
-        builder.show();
-    }
-
-    private void showAnswers() {
-        // This method should gather and show the answers. Here, just a placeholder.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Your Answers");
-        builder.setMessage("Placeholder for answers.");
-        builder.setPositiveButton("Done", (dialog, which) -> navigateToNextPage());
-        builder.show();
-    }
-
-    private void navigateToNextPage() {
-        // Intent to start a new activity or finish the current one
-        Intent intent = new Intent(InterviewActivity.this, FeedbackActivity.class);
+    private void showDoctorDialog() {
+        Intent intent = new Intent(QuestionAnswerActivity.this, BookAppointment.class);
         startActivity(intent);
         finish();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (questionsCursor != null) {
-            questionsCursor.close();
-        }
-        dbHelper.close();
+    private void navigateToSymptomChecker() {
+        Intent intent = new Intent(QuestionAnswerActivity.this, SymptomChecker.class);
+        startActivity(intent);
+        finish();
     }
 }

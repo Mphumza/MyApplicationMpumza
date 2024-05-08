@@ -4,44 +4,34 @@
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
+        tools:ignore="DataExtractionRules"
         tools:targetApi="31">
+
+        <!-- Main Activity: Set QuestionAnswerActivity as the launcher activity -->
         <activity
             android:name=".QuestionAnswerActivity"
-            android:exported="true">
+            android:exported="true"> <!-- Make sure to set exported to true for Android 12 and above -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".DbHelper"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!-- Other activities: Define them without intent-filters unless they are entry points from other apps or components -->
         <activity
             android:name=".SymptomChecker"
             android:exported="false" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false" /> <!-- Set exported to false as it's not a direct entry point from outside -->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
