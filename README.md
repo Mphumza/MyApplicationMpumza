@@ -45,3 +45,15 @@ The **Symptom Checker Module** is an essential functionality within the Medical 
 ## 📩 Contact
 For feedback or inquiries, reach out at **mphumelelingema@icloud.com**.
 
+![WhatsApp Image 2025-03-19 at 00 36 50_41709f75](https://github.com/user-attachments/assets/5352fc1b-3746-4097-9341-e4772270b2dd)
+
+
+
+![WhatsApp Image 2025-03-19 at 00 37 01_8c2ed6b5](https://github.com/user-attachments/assets/abc29459-3def-4820-8459-22b1974b3db2)
+
+
+![WhatsApp Image 2025-03-19 at 00 38 26_ccb8ee49](https://github.com/user-attachments/assets/3f23a639-08c6-40f8-898e-c57cf0b1f09a)
+
+
+
+
